@@ -1,46 +1,60 @@
-// Data array (निकाल)
-const resultData = [
-  { RollNo: 101, Name: "Rahul Sharma", Class: "10", Gender: "M", Marks: 450, Percent: 90, Rank: 1, Percentile: 99 },
-  { RollNo: 102, Name: "Sneha Patil", Class: "10", Gender: "F", Marks: 440, Percent: 88, Rank: 2, Percentile: 97 },
-  { RollNo: 103, Name: "Amit Kadam", Class: "10", Gender: "M", Marks: 430, Percent: 86, Rank: 3, Percentile: 95 },
-  { RollNo: 104, Name: "Anjali More", Class: "10", Gender: "F", Marks: 420, Percent: 84, Rank: 4, Percentile: 93 }
+const results11 = [
+  { name: "KADAM SNEHAL SNEHAL", seat: "D001", class: "11th", marks: 50, total: 50 },
+  { name: "KADAM VAISHNAVI ARJUN", seat: "D023", class: "11th", marks: 50, total: 50 },
+  { name: "MORE RUSHIKESH KANTILAL", seat: "D002", class: "11th", marks: 17, total: 50 },
+  { name: "JADHAV DARSHAN BALU", seat: "D024", class: "11th", marks: 26, total: 50 },
+  { name: "KADAM DNYANESHWARI SANDIP", seat: "D003", class: "11th", marks: 49, total: 50 },
+  { name: "GAIKWAD SUJIT DATTATRAY", seat: "D025", class: "11th", marks: 9, total: 50 },
+  { name: "MADHWAI SIDDHI BHAUSAHEB", seat: "D004", class: "11th", marks: 49, total: 50 },
+  { name: "KADAM TANVI SAMADHAN", seat: "D010", class: "11th", marks: 50, total: 50 },
+  { name: "GHANGHAV PRADNYA NARAYAN", seat: "D012", class: "11th", marks: 50, total: 50 },
+  { name: "KADAM SAMIKSHA DATTATRAY", seat: "D015", class: "11th", marks: 47, total: 50 },
+  { name: "BHOKNAL ADESH ATMARAM", seat: "D017", class: "11th", marks: 50, total: 50 },
+  { name: "PIMPARKAR VAISHNAVI S.", seat: "D022", class: "11th", marks: 49, total: 50 }
 ];
 
-// टेबल populate function
-function displayTable(data) {
-    let table = document.getElementById("resultTableBody");
-    table.innerHTML = "";
-    data.forEach(row => {
-        table.innerHTML += `<tr>
-            <td>${row.RollNo}</td>
-            <td>${row.Name}</td>
-            <td>${row.Class}</td>
-            <td>${row.Gender}</td>
-            <td>${row.Marks}</td>
-            <td>${row.Percent}</td>
-            <td>${row.Rank}</td>
-            <td>${row.Percentile}</td>
-        </tr>`;
-    });
+function loadResults() {
+  const selectedClass = document.getElementById("class").value;
+  const section = document.getElementById("result-section");
+  const tableBody = document.getElementById("table-body");
+  const publish = document.getElementById("publish-time");
+
+  tableBody.innerHTML = "";
+  publish.innerHTML = "";
+  if (!selectedClass) {
+    section.classList.add("hidden");
+    return;
+  }
+
+  section.classList.remove("hidden");
+
+  let data = [];
+  if (selectedClass === "11th") data = results11;
+
+  data.sort((a, b) => b.marks - a.marks);
+
+  const student = data[0];
+  document.getElementById("student-name").textContent = student.name;
+  document.getElementById("student-class").textContent = student.class;
+  document.getElementById("student-seat").textContent = student.seat;
+
+  data.forEach((s, index) => {
+    const percentage = ((s.marks / s.total) * 100).toFixed(2);
+    const row = `
+      <tr>
+        <td>Physics</td>
+        <td>${s.marks}</td>
+        <td>${s.total}</td>
+        <td>${percentage}%</td>
+        <td>${index + 1}</td>
+      </tr>
+    `;
+    tableBody.innerHTML += row;
+  });
+
+  // 🕒 तारीख आणि वेळ दाखवा
+  const now = new Date();
+  const date = now.toLocaleDateString('en-IN');
+  const time = now.toLocaleTimeString('en-IN');
+  publish.innerHTML = `🕒 Result Published on ${date} at ${time}`;
 }
-
-// Initial load
-displayTable(resultData);
-
-// Search functionality
-document.getElementById("searchBox").addEventListener("input", function() {
-    let query = this.value.toLowerCase();
-    let filtered = resultData.filter(row =>
-        row.Name.toLowerCase().includes(query) || row.RollNo.toString().includes(query)
-    );
-    displayTable(filtered);
-});
-
-// Class filter
-document.getElementById("classFilter").addEventListener("change", function() {
-    let selectedClass = this.value;
-    let filtered = resultData.filter(row =>
-        selectedClass === "" || row.Class === selectedClass
-    );
-    displayTable(filtered);
-});
